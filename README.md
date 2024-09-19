@@ -12,6 +12,12 @@ For example if there is an image subfolder under your extension project workspac
 
 > Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
+# License
+
+Copyright (c) Altalk Ltd. All rights reserved.
+
+Licensed under the MIT License.
+
 ## Release Notes
 
 ### 0.1.0
