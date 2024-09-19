@@ -21,21 +21,9 @@ export const commandToRegister: (keyof (Command))[] = [
     'flipV',
 ];
 export class Command {
-    private static cmd: Command | null = null;
-    private editor: vscode.TextEditor;
     private enabled: boolean;
     private box: FloatingBox;
-    static getInstance() {
-        if (!vscode.window.activeTextEditor) {
-            return null;
-        }
-        if (!Command.cmd) {
-            Command.cmd = new Command(vscode.window.activeTextEditor);
-        }
-        return Command.cmd;
-    }
-    constructor(editor: vscode.TextEditor) {
-        this.editor = editor;
+    constructor() {
         this.enabled = false;
         this.box = getBareFloatingBox();
         vscode.workspace.onDidChangeTextDocument(event => {
@@ -48,11 +36,12 @@ export class Command {
         });
     }
     async select() {
-        const sels = this.editor.selections;
+        const editor = vscode.window.activeTextEditor!;
+        const sels = editor.selections;
         console.log(`at select: sels=${selsToString(sels)}`);
         await this.cancel();
-        this.box = await getBoxFromSels(this.editor.document, sels);
-        await showFloatingBox(this.editor, this.box);
+        this.box = await getBoxFromSels(editor.document, sels);
+        await showFloatingBox(editor, this.box);
         const enabled = this.box.copy.length > 0;
         await vscode.commands.executeCommand('setContext', 'boxedit.floatingMode', enabled);
         // flag is set after setContext because it emits onDidChangeTextDocument event
@@ -63,16 +52,19 @@ export class Command {
         if (!this.enabled) return;
         console.log(`at cancelFloating`);
         this.enabled = false;
-        await hideFloatingBox(this.editor, this.box);
+        const editor = vscode.window.activeTextEditor!;
+        await hideFloatingBox(editor, this.box);
         await vscode.commands.executeCommand('setContext', 'boxedit.floatingMode', false);
+        editor.selections = [];
         console.log(`done cancelFloating`);
     }
     async paste() {
         if (!this.enabled) return;
         console.log(`at paste`);
         this.enabled = false;
-        await showFloatingBox(this.editor, this.box);
-        this.editor.selections = this.box.sels;
+        const editor = vscode.window.activeTextEditor!;
+        await showFloatingBox(editor, this.box);
+        editor.selections = this.box.sels;
         this.enabled = true;
         console.log(`done paste`);
     }
@@ -80,31 +72,33 @@ export class Command {
         if (!this.enabled) return;
         console.log(`at paste`);
         this.enabled = false;
-        await showFloatingBox(this.editor, this.box);
-        await hideFloatingBox(this.editor, this.box);
+        const editor = vscode.window.activeTextEditor!;
+        await showFloatingBox(editor, this.box);
+        await hideFloatingBox(editor, this.box);
         await vscode.commands.executeCommand('setContext', 'boxedit.floatingMode', false);
-        this.editor.selections = this.box.sels;
+        editor.selections = this.box.sels;
         console.log(`done paste`);
     }
     async onChangeSelection() {
         if (!this.enabled) return;
         console.log(`at onChangeSelection`);
-        console.log(`sels1=${selsToString(this.editor.selections)}`);
+        const editor = vscode.window.activeTextEditor!;
+        console.log(`sels1=${selsToString(editor.selections)}`);
         console.log(`sels2=${selsToString(this.box.sels)}`);
-        const diff = getSelsDiff(this.editor.selections, this.box.sels);
+        const diff = getSelsDiff(editor.selections, this.box.sels);
         if (diff === null) {
-            await this.cancel();
-            console.log(`done onChangeSelection: canceled`);
+            await this.move(0, 0);
+            console.log(`done onChangeSelection: ignored`);
             return;
         } else if (diff === true) {
             console.log(`done onChangeSelection: N/A`);
             return;
         }
         console.log(`diff=${selToString(diff)}`);
-        this.editor.selections = this.box.sels;
+        editor.selections = this.box.sels;
         const c = diff.start.character;
         const y = diff.start.line;
-        const doc = this.editor.document;
+        const doc = editor.document;
         const line = doc.lineAt(y);
         const x = computeWidth(line.text.substring(0, c));
         this.enabled = false;
@@ -115,11 +109,12 @@ export class Command {
     async doMove(x: number, y: number) {
         console.log(`at doMove(${x}, ${y})`);
         if (x < 0 || y < 0) return;
-        await hideFloatingBox(this.editor, this.box);
+        const editor = vscode.window.activeTextEditor!;
+        await hideFloatingBox(editor, this.box);
         this.box.x = x;
         this.box.y = y;
-        await showFloatingBox(this.editor, this.box);
-        this.editor.selections = this.box.sels;
+        await showFloatingBox(editor, this.box);
+        editor.selections = this.box.sels;
         console.log(`done doMove(${x}, ${y})`);
     }
     async move(dx: number, dy: number) {
@@ -143,19 +138,21 @@ export class Command {
     async flipH() {
         if (!this.enabled) return;
         this.enabled = false;
-        await hideFloatingBox(this.editor, this.box);
+        const editor = vscode.window.activeTextEditor!;
+        await hideFloatingBox(editor, this.box);
         await flipH(this.box);
-        await showFloatingBox(this.editor, this.box);
-        this.editor.selections = this.box.sels;
+        await showFloatingBox(editor, this.box);
+        editor.selections = this.box.sels;
         this.enabled = true;
     }
     async flipV() {
         if (!this.enabled) return;
         this.enabled = false;
-        await hideFloatingBox(this.editor, this.box);
+        const editor = vscode.window.activeTextEditor!;
+        await hideFloatingBox(editor, this.box);
         await flipV(this.box);
-        await showFloatingBox(this.editor, this.box);
-        this.editor.selections = this.box.sels;
+        await showFloatingBox(editor, this.box);
+        editor.selections = this.box.sels;
         this.enabled = true;
     }
 }

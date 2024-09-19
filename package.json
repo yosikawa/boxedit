@@ -2,7 +2,7 @@
   "name": "boxedit",
   "displayName": "boxedit",
   "description": "editor commands for box-selected text",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "AltalkLtd",
   "repository": {
     "type": "git",
@@ -114,11 +114,11 @@
         "command": "boxedit.cancel",
         "when": "editorTextFocus && boxedit.floatingMode"
       },{
-        "key": "space",
+        "key": "alt+space",
         "command": "boxedit.paste",
         "when": "editorTextFocus && boxedit.floatingMode"
       },{
-        "key": "enter",
+        "key": "alt+enter",
         "command": "boxedit.pasteDone",
         "when": "editorTextFocus && boxedit.floatingMode"
       },{
@@ -138,11 +138,11 @@
         "command": "boxedit.moveLeft",
         "when": "editorTextFocus && boxedit.floatingMode"
       },{
-        "key": "h",
+        "key": "alt+h",
         "command": "boxedit.flipH",
         "when": "editorTextFocus && boxedit.floatingMode"
       },{
-        "key": "v",
+        "key": "alt+v",
         "command": "boxedit.flipV",
         "when": "editorTextFocus && boxedit.floatingMode"
       }
