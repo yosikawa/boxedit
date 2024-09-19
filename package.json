@@ -2,7 +2,8 @@
   "name": "boxedit",
   "displayName": "boxedit",
   "description": "editor commands for box-selected text",
-  "version": "0.1.1",
+  "version": "0.1.2",
+  "publisher": "AltalkLtd",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yosikawa/boxedit.git"
