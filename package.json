@@ -1,8 +1,8 @@
 {
   "name": "boxedit",
   "displayName": "boxedit",
-  "description": "copy&paste box-selected text",
-  "version": "0.0.1",
+  "description": "editor commands for box-selected text",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -12,45 +12,152 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
+    "menus": {
+      "editor/title": [{
+        "submenu": "boxedit.submenus",
+        "group": "navigation"
+      }],
+      "boxedit.submenus": [{
+        "command": "boxedit.select",
+        "group": "navigation"
+      },{
+        "command": "boxedit.cancel",
+        "group": "1_basic"
+      },{
+        "command": "boxedit.paste",
+        "group": "1_basic"
+      },{
+        "command": "boxedit.pasteDone",
+        "group": "1_basic"
+      },{
+        "command": "boxedit.flipH",
+        "group": "3_flip"
+      },{
+        "command": "boxedit.flipV",
+        "group": "3_flip"
+      },{
+        "command": "boxedit.moveUp",
+        "group": "4_move"
+      },{
+        "command": "boxedit.moveRight",
+        "group": "4_move"
+      },{
+        "command": "boxedit.moveDown",
+        "group": "4_move"
+      },{
+        "command": "boxedit.moveLeft",
+        "group": "4_move"
+      }]
+    },
+    "submenus": [
       {
-        "command": "boxedit.helloWorld",
-        "title": "Hello World"
-      },
-      {
-        "command": "boxedit.reverseWord",
-        "title": "Reverse Word"
+        "id": "boxedit.submenus",
+        "icon": "$(package)",
+        "label": "Boxedit"
       }
     ],
-		"keybindings": [
-			{
-        "command": "boxedit.helloWorld",
-				"key": "ctrl+h",
-				"when": "editorTextFocus"
-			},
-			{
-        "command": "boxedit.reverseWord",
-				"key": "ctrl+t",
-				"when": "editorTextFocus"
-			},
-			{
-        "command": "boxedit.reverseWord",
-				"key": "ctrl+r",
-				"when": "editorTextFocus"
-			},
+    "commands": [
       {
-        "key": "f7",
-        "command": "runCommands",
-        "when": "editorTextFocus",
-        "args": {
-            "commands": [
-                {
-                  "command": "boxedit.helloWorld"
-                },
-                {
-                  "command": "boxedit.reverseWord"
-                }
-            ]
+        "command": "boxedit.select",
+        "category": "boxedit",
+        "title": "select"
+      },{
+        "command": "boxedit.cancel",
+        "category": "boxedit",
+        "title": "cancel"
+      },{
+        "command": "boxedit.paste",
+        "category": "boxedit",
+        "title": "paste"
+      },{
+        "command": "boxedit.pasteDone",
+        "category": "boxedit",
+        "title": "pasteDone"
+      },{
+        "command": "boxedit.moveUp",
+        "category": "boxedit",
+        "title": "moveUp"
+      },{
+        "command": "boxedit.moveRight",
+        "category": "boxedit",
+        "title": "moveRight"
+      },{
+        "command": "boxedit.moveDown",
+        "category": "boxedit",
+        "title": "moveDown"
+      },{
+        "command": "boxedit.moveLeft",
+        "category": "boxedit",
+        "title": "moveLeft"
+      },{
+        "command": "boxedit.flipH",
+        "category": "boxedit",
+        "title": "flipH"
+      },{
+        "command": "boxedit.flipV",
+        "category": "boxedit",
+        "title": "flipV"
+      }
+    ],
+    "keybindings": [
+      {
+        "key": "alt+c",
+        "command": "boxedit.select",
+        "when": "editorTextFocus"
+      },{
+        "key": "escape",
+        "command": "boxedit.cancel",
+        "when": "editorTextFocus && boxedit.floatingMode"
+      },{
+        "key": "space",
+        "command": "boxedit.paste",
+        "when": "editorTextFocus && boxedit.floatingMode"
+      },{
+        "key": "enter",
+        "command": "boxedit.pasteDone",
+        "when": "editorTextFocus && boxedit.floatingMode"
+      },{
+        "key": "alt+up",
+        "command": "boxedit.moveUp",
+        "when": "editorTextFocus && boxedit.floatingMode"
+      },{
+        "key": "alt+right",
+        "command": "boxedit.moveRight",
+        "when": "editorTextFocus && boxedit.floatingMode"
+      },{
+        "key": "alt+down",
+        "command": "boxedit.moveDown",
+        "when": "editorTextFocus && boxedit.floatingMode"
+      },{
+        "key": "alt+left",
+        "command": "boxedit.moveLeft",
+        "when": "editorTextFocus && boxedit.floatingMode"
+      },{
+        "key": "h",
+        "command": "boxedit.flipH",
+        "when": "editorTextFocus && boxedit.floatingMode"
+      },{
+        "key": "v",
+        "command": "boxedit.flipV",
+        "when": "editorTextFocus && boxedit.floatingMode"
+      }
+    ],
+    "colors": [
+      {
+        "id": "boxedit.floatingBoxBorderColor",
+        "description": "Border color for floating box",
+        "defaults": {
+          "dark": "#00ffff60",
+          "light": "#0040ff60",
+          "highContrast": "#0040ff60"
+        }
+      },{
+        "id": "boxedit.floatingBoxBackgroundColor",
+        "description": "Background color for floating box",
+        "defaults": {
+          "dark": "#e000ff60",
+          "light": "#e000ff60",
+          "highContrast": "#e000ff60"
         }
       }
     ]
@@ -70,16 +177,21 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.93.0",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
+    "@types/vscode": "^1.93.0",
     "@typescript-eslint/eslint-plugin": "^8.3.0",
     "@typescript-eslint/parser": "^8.3.0",
-    "eslint": "^9.9.1",
-    "esbuild": "^0.23.1",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^5.5.4",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.23.1",
+    "eslint": "^9.9.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-jsdoc": "^50.2.3",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "meaw": "^8.0.1"
   }
 }
