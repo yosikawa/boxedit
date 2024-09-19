@@ -3,6 +3,10 @@
   "displayName": "boxedit",
   "description": "editor commands for box-selected text",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yosikawa/boxedit.git"
+  },
   "engines": {
     "vscode": "^1.93.0"
   },
